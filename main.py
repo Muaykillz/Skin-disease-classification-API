@@ -5,12 +5,12 @@ from PIL import Image
 import io
 import numpy as np
 import pathlib
-temp = pathlib.PosixPath
-pathlib.PosixPath = pathlib.WindowsPath
+plt = platform.system()
+if plt == 'Windows': pathlib.PosixPath = pathlib.WindowsPath
 
 app = FastAPI()
 
-model = load_learner('model1.pkl')
+model = load_learner('./model1.pkl')
 
 @app.get("/")
 async def root():

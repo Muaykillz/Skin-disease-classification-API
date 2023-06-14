@@ -1,21 +1,13 @@
-import re
+from fastai.vision.all import *
+import torch
+import pathlib
+temp = pathlib.PosixPath
+pathlib.PosixPath = pathlib.WindowsPath
+from PIL import Image
 
-with open('requirements.txt', 'r') as file:
-    requirements = file.readlines()
+# folder_path = './'
+# fname = 'model1.pkl'
 
-required_libraries = set()
-for line in requirements:
-    match = re.match(r'^(\w+)==', line)
-    if match:
-        required_libraries.add(match.group(1))
+# img = 
 
-unused_libraries = set()
-with open('requirements.txt', 'w') as file:
-    for line in requirements:
-        match = re.match(r'^(\w+)==', line)
-        if match and match.group(1) not in required_libraries:
-            unused_libraries.add(match.group(1))
-        else:
-            file.write(line)
-
-print("Unused libraries:", unused_libraries)
+model = load_learner('model1.pkl')
