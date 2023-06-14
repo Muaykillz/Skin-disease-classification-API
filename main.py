@@ -10,15 +10,13 @@ if plt == 'Windows': pathlib.PosixPath = pathlib.WindowsPath
 
 app = FastAPI()
 
-model = load_learner('./model1.pkl')
-
 @app.get("/")
 async def root():
     return {"message": "Hello World!"}
 
 @app.post("/predict")
 async def image_cls(image: UploadFile = File(...)):
-
+    model = load_learner('./model1.pkl')
     image_data = await image.read()
     img = Image.open(io.BytesIO(image_data))
     img_array = np.array(img)
