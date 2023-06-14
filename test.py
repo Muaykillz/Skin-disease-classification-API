@@ -1,13 +1,20 @@
 from fastai.vision.all import *
-import torch
+import torchvision.models as models
 import pathlib
 temp = pathlib.PosixPath
 pathlib.PosixPath = pathlib.WindowsPath
 from PIL import Image
 
-# folder_path = './'
-# fname = 'model1.pkl'
+model = models.mobilenet_v2
+model = get_model(model)
 
-# img = 
+def get_model():
+    
+    def _mobilenet_v2_split(m:nn.Module): return L(m[0][0][:7],m[0][0][7:], m[1:]).map(params)
+    _mobilenet_v2_meta   = {'cut':-1, 'split':_mobilenet_v2_split, 'stats':imagenet_stats}
+    model_meta[models.mobilenet_v2] = {**_mobilenet_v2_meta}
+    model = load_learner('./model_1.pkl')
+    
+    return model
+    
 
-model = load_learner('model1.pkl')
