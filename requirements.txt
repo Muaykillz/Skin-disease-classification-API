@@ -56,7 +56,9 @@ starlette==0.27.0
 sympy==1.12
 thinc==8.1.10
 threadpoolctl==3.1.0
+--find-links https://download.pytorch.org/whl/torch_stable.html
 torch==2.0.0+cpu
+--find-links https://download.pytorch.org/whl/torch_stable.html
 torchvision==0.15.1+cpu
 tqdm==4.65.0
 typer==0.7.0
