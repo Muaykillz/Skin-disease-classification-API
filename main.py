@@ -1,26 +1,28 @@
 from fastapi import FastAPI, UploadFile, File
-from fastai.vision.all import *
 from fastai.vision.core import PILImage
 from PIL import Image
 import io
 import numpy as np
 import pathlib
+from model_helpers import model_meta, _mobilenet_v2_split
+from fastai.vision.all import *
+from torchvision import models
+from torchvision import transforms
 plt = platform.system()
 if plt == 'Windows': pathlib.PosixPath = pathlib.WindowsPath
 
 app = FastAPI()
 
-model = models.mobilenet_v2
-model = get_model(model)
+model_path = './model_2.pth'
+model = torch.load(model_path, map_location=torch.device('cpu'))
 
-def get_model():
-    
-    def _mobilenet_v2_split(m:nn.Module): return L(m[0][0][:7],m[0][0][7:], m[1:]).map(params)
-    _mobilenet_v2_meta   = {'cut':-1, 'split':_mobilenet_v2_split, 'stats':imagenet_stats}
-    model_meta[models.mobilenet_v2] = {**_mobilenet_v2_meta}
-    model = load_learner('./model_1.pkl')
-    
-    return model
+transform = transforms.Compose([
+    transforms.Resize((224, 224)),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+])
+
+class_names = ['AGEP', 'Angioedema', 'DRESS', 'FDE', 'SJSTEN', 'Urticaria']
 
 @app.get("/")
 async def root():
@@ -32,10 +34,16 @@ async def image_cls(image: UploadFile = File(...)):
     image_data = await image.read()
     img = Image.open(io.BytesIO(image_data))
     img_array = np.array(img)
-    print(img_array)
+    img = transform(img).unsqueeze(0)
+    print(img.shape)
+    print(img.dtype)
 
-    img_array = PILImage.create(img_array)
-    result = model.predict(img_array)
-    print(result)
+    with torch.no_grad():
+        output = model(img)
 
-    return {"label": f"{result[0]}", "proba": str(result[2].max().numpy())}
+    probabilities = torch.softmax(output, dim=1)[0]
+    _, predicted_class = torch.max(probabilities, dim=0)
+    predicted_label = class_names[predicted_class]
+    predicted_probability = probabilities[predicted_class].item()
+
+    return {"label": f"{predicted_label}", "proba": predicted_probability}
