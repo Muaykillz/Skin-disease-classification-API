@@ -1,12 +1,12 @@
 from fastapi import FastAPI, UploadFile, File
-from fastai.vision.all import *
-from fastai.vision.core import PILImage
-from PIL import Image
-import io
-import numpy as np
-import pathlib
-plt = platform.system()
-if plt == 'Windows': pathlib.PosixPath = pathlib.WindowsPath
+# from fastai.vision.all import *
+# from fastai.vision.core import PILImage
+# from PIL import Image
+# import io
+# import numpy as np
+# import pathlib
+# plt = platform.system()
+# if plt == 'Windows': pathlib.PosixPath = pathlib.WindowsPath
 
 app = FastAPI()
 
