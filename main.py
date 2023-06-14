@@ -4,7 +4,6 @@ from fastai.vision.core import PILImage
 from PIL import Image
 import io
 import numpy as np
-import torch
 import pathlib
 temp = pathlib.PosixPath
 pathlib.PosixPath = pathlib.WindowsPath
